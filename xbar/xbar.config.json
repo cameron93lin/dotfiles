@@ -1,0 +1,6 @@
+{
+	"autoupdate": true,
+	"terminal": {
+		"appleScriptTemplate": "activate application \"Terminal\"\ntell application \"Terminal\" \n\tif not (exists window 1) then reopen\n\tset quotedScriptName to quoted form of \"{{ .Command }}\"\n\tdo script quotedScriptName\nend tell\n"
+	}
+}
