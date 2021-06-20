@@ -77,6 +77,13 @@ exitstatus=$?
     git clone https://github.com/ryanoasis/nerd-fonts.git --depth 1&&cd nerd-fonts&&./install.sh&&cd ..&&rm -rf nerd-fonts &
     brew install mas
     mas search Xcode | head -1 | awk '{ print $1 }' | xargs mas install
+
+    # install 'code' command in terminal for Visual Studio Code
+    sudo ln -s  /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code /usr/local/bin/code
+
+    # install Visual Studio Code extension 'SettingSync'
+    code --install-extension Shan.code-settings-sync
+    
 osascript <<EOD
     tell application "Terminal"
         set ProfilesNames to name of every settings set
