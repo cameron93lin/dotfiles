@@ -39,4 +39,3 @@ clang-format
 doxygen
 wget
 git
-python@2

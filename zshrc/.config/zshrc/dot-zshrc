@@ -146,9 +146,9 @@ declare -A ZINIT
 ZINIT[HOME_DIR]=~/.config/zinit
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.config/zinit/bin/zinit.zsh ]]; then
-    print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
+    print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
     command mkdir -p "$HOME/.config/zinit" && command chmod g-rwX "$HOME/.config/zinit"
-    command git clone https://github.com/zdharma/zinit "$HOME/.config/zinit/bin" && \
+    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.config/zinit/bin" && \
         print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
         print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
@@ -161,10 +161,10 @@ autoload -Uz _zinit
 # (this is currently required for annexes)
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 zinit light-mode for \
-    zinit-zsh/z-a-rust \
-    zinit-zsh/z-a-as-monitor \
-    zinit-zsh/z-a-patch-dl \
-    zinit-zsh/z-a-bin-gem-node
+    zdharma-continuum/z-a-rust \
+    zdharma-continuum/z-a-as-monitor \
+    zdharma-continuum/z-a-patch-dl \
+    zdharma-continuum/z-a-bin-gem-node
 zinit wait="1" lucid light-mode for \
     kevinhwang91/zsh-tmux-capture \
     hlissner/zsh-autopair \
@@ -203,14 +203,14 @@ zinit ice svn
 zinit snippet OMZ::plugins/pip
 
 zinit as="completion" for \
-    OMZ::plugins/docker/_docker \
-    OMZ::plugins/rust/_rust \
-    OMZ::plugins/fd/_fd
+    OMZP::docker/_docker \
+    OMZP::rust \
+    OMZP::fd/_fd
 
 zinit wait lucid for \
  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
     Aloxaf/fzf-tab \
-    zdharma/fast-syntax-highlighting \
+    zdharma-continuum/fast-syntax-highlighting \
  blockf \
     zsh-users/zsh-completions \
  atclone="dircolors -b LS_COLORS > c.zsh" atpull='%atclone' pick='c.zsh' \
