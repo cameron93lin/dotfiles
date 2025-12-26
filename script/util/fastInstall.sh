@@ -1,53 +1,71 @@
 #!/bin/zsh
+
+# Function to send a command to a tmux pane
 tmux_exec() {
-  local target=$1
+  local pane_index=$1
   local command=$2
-  tmux send-keys -t $1 C-z $2 ENTER
+  tmux send-keys -t "$pane_index" C-z "$command" ENTER
 }
 
-update_avaliable_process() {
-    avaliable_process=( `tmux list-panes -af "#{&&:#{==:#{pane_bg},default},#{!=:#P,0}}" -F "#P"` )
-    total_process=( `tmux list-panes -af "#{!=:#P,0}" -F "#P"` )
+# Function to update the list of available processes (panes with default bg)
+update_available_processes() {
+    # Panes with default background are considered available.
+    # Exclude pane 0 (the controller).
+    available_processes=( $(tmux list-panes -af "#{&&:#{==:#{pane_bg},default},#{!=:#P,0}}" -F "#P") )
 }
-local file=$1
-local total=$#
-local installed=0
-local max_process=4
-local current_process=0
-local app_array=($(awk '{print $1}' $file))
-local avaliable_process=()
-local total_process=()
 
-FUNCTION_DIR=$(dirname "$(perl -MCwd -e 'print Cwd::abs_path shift' "$0")")
-SCRIPT_DIR=($(dirname $FUNCTION_DIR))
-for i ({1..$max_process}) {
+file=$1
+max_process=4
+apps=($(awk '{print $1}' "$file"))
+available_processes=()
+
+# Resolve SCRIPT_DIR. This script is in script/util/fastInstall.sh
+# We want SCRIPT_DIR to be .../script
+CURRENT_DIR=${0:A:h}
+SCRIPT_DIR=${CURRENT_DIR:h}
+
+# Split windows for parallel processing
+for i in {1..$max_process}; do
   tmux split-window
-}
-echo "splited"
+done
+
 tmux select-layout tiled
 tmux set-option -g mouse on
-for app in "${app_array[@]}"; do
+
+installed=0
+
+for app in "${apps[@]}"; do
   sleep 1
-  tmux_command="source $SCRIPT_DIR/util/brew_install.sh $app"
-  update_avaliable_process
-  echo $app
-  echo "Current process $#avaliable_process"
-  echo $avaliable_process
-  while [[ $#avaliable_process == 0 ]] {
+  # Execute the script directly instead of sourcing
+  tmux_command="$SCRIPT_DIR/util/brew_install.sh $app"
+  
+  update_available_processes
+  echo "Installing: $app"
+  
+  # Wait for an available pane
+  while [[ ${#available_processes[@]} -eq 0 ]]; do
     sleep 1
-    update_avaliable_process
-    echo "Current process in while loop $#avaliable_process"
-    echo $avaliable_process
-  }
-  echo $command_wrapper
-  tmux_exec $avaliable_process[1] "$tmux_command $avaliable_process[1]"
-  echo "run-shell on $avaliable_process[1]"
+    update_available_processes
+  done
+
+  target_pane=${available_processes[1]}
+  
+  echo "Assigning $app to pane $target_pane"
+  tmux_exec "$target_pane" "$tmux_command $target_pane"
+  
   ((++installed))
-  echo "installed $installed"
+  echo "Installed count: $installed"
 done
-while [[ $#avaliable_process < $#total_process ]] {
-  sleep 1
-  update_avaliable_process
-}
+
+# Wait for all processes to finish
+while true; do
+    update_available_processes
+    total_worker_panes=$(tmux list-panes -af "#{!=:#P,0}" | wc -l)
+    # If all worker panes are available (default bg), we are done.
+    if [[ ${#available_processes[@]} -eq $total_worker_panes ]]; then
+        break
+    fi
+    sleep 1
+done
 
 tmux kill-session -t ptmux

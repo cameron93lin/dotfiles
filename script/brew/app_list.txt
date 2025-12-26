@@ -26,16 +26,3 @@ qlstephen
 qlmarkdown
 quicklook-json
 qlimagesize
-curl
-gstreamer
-gst-plugins-base
-gst-plugins-good
-gst-plugins-bad
-gst-libav
-sqlite3
-repo
-cmake
-clang-format
-doxygen
-wget
-git

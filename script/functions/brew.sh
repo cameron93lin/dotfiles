@@ -1,61 +1,85 @@
 #!/bin/zsh
 
-FUNCTION_DIR=$(dirname "$(perl -MCwd -e 'print Cwd::abs_path shift' "$0")")
-SCRIPT_DIR=($(dirname $FUNCTION_DIR))
+# Resolve directory of this script (brew.sh is in script/functions)
+# Using %x to get the source file path when sourced
+FUNCTION_DIR=${${(%):-%x}:A:h}
+SCRIPT_DIR=${FUNCTION_DIR:h} # points to .../script
+
 fastInstall() {
-	echo "Installing from $SCRIPT_DIR/brew/$1..."
-	echo "Will install following package by Homebrew:\n $(awk '{printf "%s ", $1}' $SCRIPT_DIR/brew/$1)"
-	apple_script="tell app \"Terminal\"
-	do script \"tmux new-session -d -s ptmux 'source $SCRIPT_DIR/util/fastInstall.sh $SCRIPT_DIR/brew/$1';tmux attach-session -t ptmux;exit\"
-		set the position of the first window to {0, 0}
-		set the bounds of the first window to {0, 22, 1920, 1080}
-	end tell"
+    local list_file=$1
+    local list_path="$SCRIPT_DIR/brew/$list_file"
+    
+    if [[ ! -f "$list_path" ]]; then
+        echo "Error: List file $list_path not found."
+        return 1
+    fi
 
-	osascript -e $apple_script
+    echo "Installing packages from $list_file..."
+    
+    # Get list of packages using awk to grab first column
+    local packages=($(awk '{print $1}' "$list_path"))
+    
+    for package in "${packages[@]}"; do
+        echo "--------------------------------------------------"
+        echo "Installing: $package"
+        echo "--------------------------------------------------"
+        brew install "$package"
+        
+        if [[ $? -eq 0 ]]; then
+            echo "Successfully installed $package"
+        else
+            echo "Error installing $package. Continuing..."
+        fi
+    done
 
-	tmux_running=($(ps aux|grep tmux|grep -v grep))
-	while (($#tmux_running==0)) {
-		sleep 1
-		tmux_running=($(ps aux|grep tmux|grep -v grep))
-	}
-	echo "Installing... Do not close the popup terminal."
-	until (($#tmux_running==0)) {
-		sleep 1
-		tmux_running=($(ps aux|grep tmux|grep -v grep))
-	}
-
-	echo "Finished Installing $SCRIPT_DIR/brew/$1"
+    echo "Finished Installing $list_file"
 }
 
 add_to_applist() {
-	applist+=($(awk '{print $1}' $SCRIPT_DIR/brew/$1))
+    local list_name=$1
+    if [[ -f "$SCRIPT_DIR/brew/$list_name" ]]; then
+        applist+=($(awk '{print $1}' "$SCRIPT_DIR/brew/$list_name"))
+    else
+        echo "Warning: App list '$list_name' not found at $SCRIPT_DIR/brew/$list_name"
+    fi
 }
+
+generateAppList() {
+    applist=()
+    add_to_applist binaries
+    add_to_applist common
+    add_to_applist development
+    [[ -n "$personal" ]] && add_to_applist personal
+    [[ -n "$business" ]] && add_to_applist business
+    add_to_applist plugins
+    [[ -n "$amazon" ]] && add_to_applist amazon
+}
+
+showAppList() {
+    generateAppList
+    # Join array with newlines
+    local list_str="${(F)applist}"
+    
+    if command -v whiptail &> /dev/null; then
+        whiptail --title "App Install List" --scrolltext --msgbox "The following applications will be installed:\n\n$list_str" 20 70
+    else
+        echo "The following applications will be installed:"
+        echo "$list_str"
+        echo "Press Enter to continue..."
+        read
+    fi
+}
+
 installHomebrewApp() {
-	brew update
-	brew upgrade
-	rm -rf $SCRIPT_DIR/brew/app_list.txt
-	applist=()
-	add_to_applist binaries
+    brew update
+    brew upgrade
+    
+    local app_list_file="$SCRIPT_DIR/brew/app_list.txt"
+    rm -f "$app_list_file"
+    
+    generateAppList
 
-	# install common app
-	add_to_applist common
-
-	# install development app
-	add_to_applist development
-
-	# install personal app
-	[[ $personal ]] && add_to_applist personal
-
-	# install business app
-	[[ $business ]] && add_to_applist business
-
-	# install plugins for preview app
-	# add more from https://github.com/sindresorhus/quick-look-plugins
-	add_to_applist plugins
-
-	add_to_applist amazon
-
-	printf "%s\n" "${applist[@]}" >> $SCRIPT_DIR/brew/app_list.txt
-	fastInstall app_list.txt
-	export PATH="/usr/local/opt/curl/bin:$PATH"
+    printf "%s\n" "${applist[@]}" >> "$app_list_file"
+    fastInstall app_list.txt
+    export PATH="/usr/local/opt/curl/bin:$PATH"
 }

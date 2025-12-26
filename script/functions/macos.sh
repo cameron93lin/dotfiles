@@ -199,7 +199,7 @@ defaults write com.apple.terminal StringEncodings -array 4
 defaults write com.googlecode.iterm2 PromptOnQuit -bool false
 
 # Use custom setting for iterm2
-defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "$SCRIPT_DIR:h/iTerm2/"
+defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "$BASEDIR/iTerm2/"
 defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
 
 # Show the main window when launching Activity Monitor

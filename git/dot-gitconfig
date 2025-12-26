@@ -4,3 +4,6 @@
 #	email = cameron93lin@gmail.com
 [diff "plist"]
 	textconv = plutil -convert xml1 -o -
+[user]
+	name = Cameron Lin
+	email = cameron93lin@gmail.com
