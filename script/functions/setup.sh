@@ -23,8 +23,8 @@ ensure_homebrew() {
             eval "$(/opt/homebrew/bin/brew shellenv)"
             echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
         elif [[ -f "/usr/local/bin/brew" ]]; then
-            eval "$(/usr/local/bin/brew shellenv)"
-            echo 'eval "$(/usr/local/bin/brew shellenv)"' >> ~/.zprofile
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+            echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
         fi
         
         echo "Finish homebrew installation!"
@@ -53,7 +53,9 @@ get_setup_type() {
     else
         # Interactive selection
         chosen_type=$(whiptail --title "Choose setup type" --radiolist \
-        "What is the setup type?\n Use 'Space' to select options \n Use 'TAB' to select [OK] or [Cancel] button \n " \
+        "What is the setup type? Use 'Space' to select options 
+ Use 'TAB' to select [OK] or [Cancel] button 
+ " \
         15 60 4 \
         "amazon" "For Amazon" OFF \
         "personal" "For personal" OFF \
@@ -113,4 +115,22 @@ configure_terminal() {
         end repeat
     end tell
 EOD
+}
+
+setup_alfred_theme() {
+    echo "Setting up Alfred theme..."
+    # BASEDIR is exported in osx.sh
+    local theme_path="$BASEDIR/alfred_themes/almost cloudy.alfredappearance"
+    
+    if [[ -f "$theme_path" ]]; then
+        # Check for Alfred
+        if ls /Applications/Alfred* &> /dev/null; then
+             echo "Importing Alfred theme..."
+             open "$theme_path"
+        else
+             echo "Alfred not found. Please install Alfred first."
+        fi
+    else
+        echo "Alfred theme file not found at $theme_path"
+    fi
 }

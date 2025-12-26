@@ -61,6 +61,7 @@ setup_nerd_fonts
 setup_mas_apps
 setup_vscode
 configure_terminal
+setup_alfred_theme
 
 echo "exit"
 exit 0
