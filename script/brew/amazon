@@ -4,7 +4,7 @@ gst-plugins-base
 gst-plugins-good
 gst-plugins-bad
 gst-libav
-sqlite3
+sqlite
 repo
 cmake
 clang-format

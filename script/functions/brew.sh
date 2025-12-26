@@ -20,6 +20,11 @@ fastInstall() {
     local packages=($(awk '{print $1}' "$list_path"))
     
     for package in "${packages[@]}"; do
+        if brew list "$package" &>/dev/null; then
+            echo "Skipping $package (already installed)"
+            continue
+        fi
+
         echo "--------------------------------------------------"
         echo "Installing: $package"
         echo "--------------------------------------------------"

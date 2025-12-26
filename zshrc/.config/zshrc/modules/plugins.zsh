@@ -6,7 +6,7 @@ ZINIT[HOME_DIR]=~/.config/zinit
 if [[ ! -f $HOME/.config/zinit/bin/zinit.zsh ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
     command mkdir -p "$HOME/.config/zinit" && command chmod g-rwX "$HOME/.config/zinit"
-    command git clone https://github.com/zdharma/zinit "$HOME/.config/zinit/bin" && \
+    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.config/zinit/bin" && \
         print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
         print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
@@ -58,7 +58,7 @@ zinit as="completion" for \
  
 zinit wait lucid for \
  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-    zdharma/fast-syntax-highlighting \
+    zdharma-continuum/fast-syntax-highlighting \
     Aloxaf/fzf-tab \
  blockf \
     zsh-users/zsh-completions \
