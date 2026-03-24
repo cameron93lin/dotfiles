@@ -2,46 +2,95 @@
 
 [ -z "${BRANCH}" ] && export BRANCH="master"
 
-echo "Check if Homebrew is installed..."
-which -s brew
-if [[ $? != 0 ]] {
-    echo "Homebrew not found! Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    echo "Finish homebrew installation!"
-} else {
-    echo "Homebrew is installed!"
-}
-brew install git
-if [[ -e ~/dotfiles ]] {
-  echo "~/dotfiles exist! Use ~/dotfiles as directory for following script"
-} else {
-  git clone --depth=1 -b ${BRANCH} https://github.com/cameron93lin/dotfiles.git ~/dotfiles
-}
-cd ~/dotfiles
-
-SCRIPT_DIR=$(perl -MCwd -e 'print Cwd::abs_path shift' "$0")
-
-# Check for OS X
+# Detect environment
 PLATFORM='unknown'
-unamestr=$( uname )
+unamestr=$(uname)
+IS_OD=false
 
 if [[ "$unamestr" == 'Darwin' ]]; then
     PLATFORM='osx'
+elif [[ "$unamestr" == 'Linux' ]]; then
+    PLATFORM='linux'
+    # Detect remote dev environment
+    if [[ -f /etc/fbwhoami ]] || [[ -d /data/users ]]; then
+        IS_OD=true
+    fi
+fi
+
+# Source local bootstrap overrides if present
+[[ -f ~/dotfiles/bootstrap.local.sh ]] && source ~/dotfiles/bootstrap.local.sh
+
+# Ensure git is available
+if ! command -v git &>/dev/null; then
+    if [[ "$PLATFORM" == 'osx' ]]; then
+        echo "Check if Homebrew is installed..."
+        which -s brew
+        if [[ $? != 0 ]]; then
+            echo "Homebrew not found! Installing Homebrew..."
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        fi
+        brew install git
+    else
+        echo "git not found. Please install git first."
+        exit 1
+    fi
+fi
+
+# Clone or use existing dotfiles
+if [[ -e ~/dotfiles ]]; then
+    echo "~/dotfiles exist! Using existing directory"
+else
+    git clone --depth=1 -b ${BRANCH} https://github.com/cameron93lin/dotfiles.git ~/dotfiles
+fi
+cd ~/dotfiles
+
+BASEDIR="$(cd "$(dirname "${0}")" >/dev/null && pwd)"
+
+if [[ "$PLATFORM" == 'osx' ]]; then
+    SETUP_FILE="$BASEDIR/script/osx.sh"
+    if [[ -e $SETUP_FILE ]]; then
+        . $SETUP_FILE $1
+    else
+        echo "Error: Missing setup file. Exiting."
+        exit 1
+    fi
+elif [[ "$IS_OD" == true ]]; then
+    echo "Setting up for remote dev environment..."
+
+    # Install starship
+    mkdir -p ~/.config/bin
+    if [[ ! -x ~/.config/bin/starship ]]; then
+        echo "Installing starship..."
+        curl -sLo /tmp/starship.tar.gz \
+            https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-musl.tar.gz
+        tar -xzf /tmp/starship.tar.gz -C ~/.config/bin starship 2>/dev/null
+    fi
+
+    # Install zoxide
+    if [[ ! -x ~/.config/bin/zoxide ]]; then
+        echo "Installing zoxide..."
+        curl -sLo /tmp/zoxide.tar.gz \
+            https://github.com/ajeetdsouza/zoxide/releases/latest/download/zoxide-0.9.9-x86_64-unknown-linux-musl.tar.gz
+        mkdir -p /tmp/zoxide-extract
+        tar -xzf /tmp/zoxide.tar.gz -C /tmp/zoxide-extract 2>/dev/null
+        cp /tmp/zoxide-extract/zoxide ~/.config/bin/
+    fi
+
+    # Symlink configs
+    mkdir -p ~/.config/zshrc/modules
+    ln -sf ~/dotfiles/zshrc/.config/zshrc/dot-zshrc ~/.config/zshrc/.zshrc
+    for f in ~/dotfiles/zshrc/.config/zshrc/modules/*.zsh; do
+        ln -sf "$f" ~/.config/zshrc/modules/
+    done
+    ln -sf ~/dotfiles/tmux/dot-tmux.conf ~/.tmux.conf
+
+    # Copy starship config
+    ln -sf ~/dotfiles/starship/.config/starship.toml ~/.config/starship.toml 2>/dev/null
+
+    echo "Remote dev setup complete! Run 'source ~/.config/zshrc/.zshrc' or open a new shell."
 else
     echo "Error: $PLATFORM is not supported. Exiting."
     exit 1
-fi
-
-BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-
-SETUP_FILE="$BASEDIR/script/$PLATFORM.sh"
-
-if [[ -e $SETUP_FILE ]]
-then
-  . $SETUP_FILE $1
-else
-  echo "Error: Missing setup file. Exiting."
-  exit 1
 fi
 
 exit 0

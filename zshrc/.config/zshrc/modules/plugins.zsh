@@ -16,45 +16,36 @@ autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
  
 # Plugins
-zinit ice depth=1; zinit light romkatv/powerlevel10k
-
-zinit light-mode for \
-    zdharma-continuum/zinit-annex-rust \
-    IsraelSampaio/z-a-as-monitor \
-    zdharma-continuum/zinit-annex-patch-dl \
-    zdharma-continuum/zinit-annex-bin-gem-node
+# zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 zinit wait="1" lucid light-mode for \
-    kevinhwang91/zsh-tmux-capture \
     hlissner/zsh-autopair \
-    hchbaw/zce.zsh \
-    Aloxaf/gencomp \
-    agkozak/zsh-z \
-    wfxr/forgit
+    wfxr/forgit \
+    MichaelAquilina/zsh-you-should-use \
+    zsh-users/zsh-history-substring-search \
+    urbainvaes/fzf-marks \
+    MichaelAquilina/zsh-auto-notify \
+    mattmc3/zsh-safe-rm \
+    paulirish/git-open \
+    desyncr/auto-ls
 
 zinit wait="1" lucid for \
-    OMZ::lib/clipboard.zsh \
     OMZ::lib/git.zsh \
-    OMZ::plugins/systemd/systemd.plugin.zsh \
     OMZ::plugins/sudo/sudo.plugin.zsh \
-    OMZ::plugins/git/git.plugin.zsh
- 
+    OMZ::plugins/git/git.plugin.zsh \
+    OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh \
+    OMZ::plugins/extract/extract.plugin.zsh
+
 zinit ice mv=":cht.sh -> cht.sh" atclone="chmod +x cht.sh" as="program"
 zinit snippet https://cht.sh/:cht.sh
- 
+
 zinit ice mv=":zsh -> _cht" as="completion"
 zinit snippet https://cheat.sh/:zsh
  
-zinit ice svn 
-zinit snippet OMZ::plugins/extract
- 
-zinit ice svn 
-zinit snippet OMZ::plugins/pip
- 
-zinit as="completion" for \
-    OMZ::plugins/docker/_docker \
-    OMZ::plugins/rust \
-    OMZ::plugins/fd/_fd
+# zinit as="completion" for \
+#     OMZ::plugins/docker/_docker \
+#     OMZ::plugins/rust \
+#     OMZ::plugins/fd/_fd
  
 zinit wait lucid for \
  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \

@@ -9,7 +9,7 @@ stowFile() {
 
     # stow config
     stow --dotfiles -R ssh -v
-    stow --no-folding --dotfiles -R zshrc p10k git iterm2 -v
+    stow --no-folding --dotfiles -R zshrc p10k git iterm2 tmux -v
 
     # remove and stow xbar config
     # xbar path

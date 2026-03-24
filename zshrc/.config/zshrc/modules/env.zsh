@@ -1,6 +1,12 @@
 # Language
 export LANG=en_US.UTF-8
 
+# Local binaries
+export PATH="$HOME/.config/bin:$PATH"
+
+# Source local-only config if present (gitignored)
+[[ -f "${MODULES_DIR:-${0:A:h}}/env.local.zsh" ]] && source "${MODULES_DIR:-${0:A:h}}/env.local.zsh"
+
 # Homebrew
 export PATH=/opt/homebrew/bin:$PATH
 export PATH="/usr/local/opt/curl/bin:$PATH"
@@ -31,7 +37,7 @@ export PATH=$JAVA_HOME/bin:$PATH
 # Python / Pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+command -v pyenv >/dev/null && eval "$(pyenv init -)"
 
 # Other Tools
 export PATH=$HOME/.toolbox/bin:$PATH
@@ -42,6 +48,12 @@ export PATH=/Applications/Fortify/Fortify_SCA_and_Apps_20.2.0/bin/:$PATH
 export LS_OPTIONS='--color=auto'
 export CLICOLOR='Yes'
 export LSCOLORS="gxBxhxDxfxhxhxhxhxcxcx"
+
+# Zoxide (replaces zsh-z)
+command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
+
+# FZF marks
+[[ -f ~/.fzf-marks ]] || touch ~/.fzf-marks
 
 # Manpath
 # export MANPATH="/usr/local/man:$MANPATH"

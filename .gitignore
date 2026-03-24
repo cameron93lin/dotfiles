@@ -3,3 +3,10 @@
 *.key
 *.pub
 known_hosts
+# Local-only configs (not pushed)
+**/env.local.zsh
+**/work.local.zsh
+bootstrap.local.sh
+.zsh_history
+.zcompdump*
+zinit/

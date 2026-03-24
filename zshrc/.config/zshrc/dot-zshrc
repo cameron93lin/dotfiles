@@ -1,9 +1,7 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
- source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# p10k instant prompt (disabled, using starship)
+# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+#  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# fi
 
 # Define ZDOTDIR if not set (though .zshenv sets it, this is safe fallback)
 ZDOTDIR=${ZDOTDIR:-$HOME/.config/zshrc}
@@ -16,5 +14,5 @@ source "$MODULES_DIR/aliases.zsh"
 source "$MODULES_DIR/work.zsh"
 source "$MODULES_DIR/theme.zsh"
 
-# Powerlevel10k Config
-[[ ! -f ~/.config/p10k/p10k.zsh ]] || source ~/.config/p10k/p10k.zsh
+# p10k (disabled, using starship)
+# [[ ! -f ~/.config/p10k/p10k.zsh ]] || source ~/.config/p10k/p10k.zsh
