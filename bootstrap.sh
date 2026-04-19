@@ -49,6 +49,12 @@ if [[ "$PLATFORM" == 'osx' ]]; then
         echo "Error: Missing setup file. Exiting."
         exit 1
     fi
+
+    # Restore app preferences
+    if [[ -f "$BASEDIR/cmux/com.cmuxterm.app.plist" ]]; then
+        defaults import com.cmuxterm.app "$BASEDIR/cmux/com.cmuxterm.app.plist"
+        echo "cmux preferences restored."
+    fi
 elif [[ "$PLATFORM" == 'linux' ]]; then
     echo "Setting up for Linux..."
 
@@ -64,11 +70,7 @@ elif [[ "$PLATFORM" == 'linux' ]]; then
     # Install zoxide
     if [[ ! -x ~/.config/bin/zoxide ]]; then
         echo "Installing zoxide..."
-        curl -sLo /tmp/zoxide.tar.gz \
-            https://github.com/ajeetdsouza/zoxide/releases/latest/download/zoxide-0.9.9-x86_64-unknown-linux-musl.tar.gz
-        mkdir -p /tmp/zoxide-extract
-        tar -xzf /tmp/zoxide.tar.gz -C /tmp/zoxide-extract 2>/dev/null
-        cp /tmp/zoxide-extract/zoxide ~/.config/bin/
+        curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh -s -- --bin-dir ~/.config/bin
     fi
 
     # Symlink configs

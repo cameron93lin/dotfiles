@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>appearanceMode</key>
+	<string>system</string>
+	<key>appLanguage</key>
+	<string>system</string>
+	<key>browserInterceptTerminalOpenCommandInCmuxBrowser</key>
+	<false/>
+	<key>browserOpenTerminalLinksInCmuxBrowser</key>
+	<false/>
+	<key>browserThemeMode</key>
+	<string>system</string>
+	<key>sendAnonymousTelemetry</key>
+	<false/>
+	<key>sidebarBlendMode</key>
+	<string>withinWindow</string>
+	<key>sidebarBlurOpacity</key>
+	<integer>1</integer>
+	<key>sidebarCornerRadius</key>
+	<integer>0</integer>
+	<key>sidebarMaterial</key>
+	<string>sidebar</string>
+	<key>sidebarPreset</key>
+	<string>nativeSidebar</string>
+	<key>sidebarState</key>
+	<string>followWindow</string>
+	<key>sidebarTintHex</key>
+	<string>#000000</string>
+	<key>sidebarTintOpacity</key>
+	<real>0.18</real>
+	<key>socketControlMode</key>
+	<string>automation</string>
+	<key>SUAutomaticallyUpdate</key>
+	<false/>
+	<key>SUEnableAutomaticChecks</key>
+	<false/>
+	<key>SUSendProfileInfo</key>
+	<false/>
+	<key>warnBeforeQuitShortcut</key>
+	<true/>
+</dict>
+</plist>

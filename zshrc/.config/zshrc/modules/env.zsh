@@ -25,10 +25,6 @@ export NVM_DIR="$HOME/.nvm"
 
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-export LDFLAGS="-L/opt/homebrew/opt/node@18/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/node@18/include"
-export PATH="/opt/homebrew/opt/node@18/bin:$PATH"
-export PATH="/usr/local/opt/node@10/bin:$PATH"
 
 # Python / Pyenv
 export PYENV_ROOT="$HOME/.pyenv"
