@@ -30,19 +30,10 @@ export CPPFLAGS="-I/opt/homebrew/opt/node@18/include"
 export PATH="/opt/homebrew/opt/node@18/bin:$PATH"
 export PATH="/usr/local/opt/node@10/bin:$PATH"
 
-# Java
-export JAVA_HOME=/apollo/env/JavaSE8/jdk1.8
-export PATH=$JAVA_HOME/bin:$PATH
-
 # Python / Pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 command -v pyenv >/dev/null && eval "$(pyenv init -)"
-
-# Other Tools
-export PATH=$HOME/.toolbox/bin:$PATH
-export PATH=$PATH:$HOME/.odin-tools/env/OdinRetrievalScript-1.0/runtime/bin
-export PATH=/Applications/Fortify/Fortify_SCA_and_Apps_20.2.0/bin/:$PATH
 
 # Colors
 export LS_OPTIONS='--color=auto'

@@ -5,19 +5,14 @@
 # Detect environment
 PLATFORM='unknown'
 unamestr=$(uname)
-IS_OD=false
 
 if [[ "$unamestr" == 'Darwin' ]]; then
     PLATFORM='osx'
 elif [[ "$unamestr" == 'Linux' ]]; then
     PLATFORM='linux'
-    # Detect remote dev environment
-    if [[ -f /etc/fbwhoami ]] || [[ -d /data/users ]]; then
-        IS_OD=true
-    fi
 fi
 
-# Source local bootstrap overrides if present
+# Source local bootstrap overrides if present (gitignored)
 [[ -f ~/dotfiles/bootstrap.local.sh ]] && source ~/dotfiles/bootstrap.local.sh
 
 # Ensure git is available
@@ -54,8 +49,8 @@ if [[ "$PLATFORM" == 'osx' ]]; then
         echo "Error: Missing setup file. Exiting."
         exit 1
     fi
-elif [[ "$IS_OD" == true ]]; then
-    echo "Setting up for remote dev environment..."
+elif [[ "$PLATFORM" == 'linux' ]]; then
+    echo "Setting up for Linux..."
 
     # Install starship
     mkdir -p ~/.config/bin
@@ -83,11 +78,9 @@ elif [[ "$IS_OD" == true ]]; then
         ln -sf "$f" ~/.config/zshrc/modules/
     done
     ln -sf ~/dotfiles/tmux/dot-tmux.conf ~/.tmux.conf
-
-    # Copy starship config
     ln -sf ~/dotfiles/starship/.config/starship.toml ~/.config/starship.toml 2>/dev/null
 
-    echo "Remote dev setup complete! Run 'source ~/.config/zshrc/.zshrc' or open a new shell."
+    echo "Linux setup complete! Run 'source ~/.config/zshrc/.zshrc' or open a new shell."
 else
     echo "Error: $PLATFORM is not supported. Exiting."
     exit 1

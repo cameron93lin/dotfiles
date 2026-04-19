@@ -1,18 +1,8 @@
-# p10k instant prompt (disabled, using starship)
-# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-#  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-# fi
-
-# Define ZDOTDIR if not set (though .zshenv sets it, this is safe fallback)
 ZDOTDIR=${ZDOTDIR:-$HOME/.config/zshrc}
 MODULES_DIR="$ZDOTDIR/modules"
 
-# Source Modules
 source "$MODULES_DIR/env.zsh"
 source "$MODULES_DIR/plugins.zsh"
 source "$MODULES_DIR/aliases.zsh"
 source "$MODULES_DIR/work.zsh"
 source "$MODULES_DIR/theme.zsh"
-
-# p10k (disabled, using starship)
-# [[ ! -f ~/.config/p10k/p10k.zsh ]] || source ~/.config/p10k/p10k.zsh
